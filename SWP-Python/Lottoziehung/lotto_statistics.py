@@ -1,6 +1,6 @@
 import random
 
-statistics = {i:0 for i in range(1, 46)}
+statistics = {i:0 for i in range(1, 46)} #dict-comprehension
 
 def draw():
     numbers = list(range(1, 46))
