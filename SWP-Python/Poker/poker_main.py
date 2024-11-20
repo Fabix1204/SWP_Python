@@ -20,6 +20,15 @@ class Card():
     def __eq__(self, other):
         return self.value == other.value and self.color == other.color
 
+def user_input():
+    try:
+        n = int(input("Enter the number of simulations to run: "))
+        hand_size = int(input("Enter the size of the poker hand to simulate: "))
+        return n, hand_size
+    except ValueError:
+        print("Invalid input. Please enter a valid integer.")
+        return user_input()
+
 # Funktion, die ein Kartendeck mit 52 Karten erstellt
 def create_deck():
     # Liste der Werte (2-10, J, Q, K, A)
@@ -32,77 +41,92 @@ def create_deck():
 
 # Funktion, die das Deck mischt
 def shuffle_deck(deck):
-    random.shuffle(deck)
-    return deck
+    try:
+        random.shuffle(deck)
+        return deck
+    except Exception as e:
+        print(f"Error while shuffling deck: {e}")
+        return deck  # Falls ein Fehler auftritt, geben wir das Deck unverändert zurück
 
 # Funktion, die eine bestimmte Anzahl an Karten aus dem Deck zieht
 def deal_cards(deck, size):
-    # pop entfernt das letzte Element aus der Liste des Decks und gibt es zurück
+    # Überprüfen, ob genügend Karten im Deck sind
+    if len(deck) < size:
+        raise ValueError("Not enough cards left in the deck to deal.")
+    # Entferne und gib die Karten zurück
     return [deck.pop() for _ in range(size)]
+
 
 # Funktion zur Überprüfung der Kartenhand, um die beste Pokerhand zu ermitteln
 def check_hand(hand):
-    # Extrahiert die Werte und Farben der Karten in der Hand
-    values = [card.value for card in hand]
-    colors = [card.color for card in hand]
-    
-    # Kartewerte in Zahlen umwandeln, um auf eine Reihenfolge (Straight) zu prüfen
-    value_map = {'2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, 
-                 '10': 10, 'J': 11, 'Q': 12, 'K': 13, 'A': 14}
-    num_values = sorted([value_map[v] for v in values])
+    try:
+        # Extrahiert die Werte und Farben der Karten in der Hand
+        values = [card.value for card in hand]
+        colors = [card.color for card in hand]
+        
+        # Kartewerte in Zahlen umwandeln, um auf eine Reihenfolge (Straight) zu prüfen
+        value_map = {'2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, 
+                     '10': 10, 'J': 11, 'Q': 12, 'K': 13, 'A': 14}
+        num_values = sorted([value_map[v] for v in values])
 
-    # Zählt, wie oft jede Karte in der Hand vorkommt
-    value_counts = Counter(values)
-    # Gibt die häufigsten Karten und ihre Häufigkeit zurück
-    # Bsp: most_common_values = [('A', 2), ('K', 2), ('10', 1)]
-    most_common_values = value_counts.most_common()
+        # Zählt, wie oft jede Karte in der Hand vorkommt
+        value_counts = Counter(values)
+        # Gibt die häufigsten Karten und ihre Häufigkeit zurück
+        most_common_values = value_counts.most_common()
 
-    # Überprüft, ob alle Karten die gleiche Farbe haben (Flush)
-    is_flush = len(set(colors)) == 1
+        # Überprüft, ob alle Karten die gleiche Farbe haben (Flush)
+        is_flush = len(set(colors)) == 1
 
-    # Überprüft, ob die Kartenwerte aufeinanderfolgend sind (Straight)
-    is_straight = all(num_values[i] - num_values[i - 1] == 1 for i in range(1, 5))
+        # Überprüft, ob die Kartenwerte aufeinanderfolgend sind (Straight)
+        is_straight = all(num_values[i] - num_values[i - 1] == 1 for i in range(1, 5))
 
-    # Überprüft, ob die Hand ein Royal Flush ist (Spezialfall von Straight Flush)
-    is_royal_flush = is_flush and is_straight and num_values == [10, 11, 12, 13, 14]
+        # Überprüft, ob die Hand ein Royal Flush ist (Spezialfall von Straight Flush)
+        is_royal_flush = is_flush and is_straight and num_values == [10, 11, 12, 13, 14]
 
-    # Bestimme die Pokerhand basierend auf den Kartenmustern
-    if is_royal_flush:
-        return "Royal Flush"
-    if is_flush and is_straight:
-        return "Straight Flush"
-    if most_common_values[0][1] == 4:
-        return "Four of a Kind"
-    if most_common_values[0][1] == 3 and most_common_values[1][1] == 2:
-        return "Full House"
-    if is_flush:
-        return "Flush"
-    if is_straight:
-        return "Straight"
-    if most_common_values[0][1] == 3:
-        return "Three of a Kind"
-    if most_common_values[0][1] == 2 and most_common_values[1][1] == 2:
-        return "Two Pair"
-    if most_common_values[0][1] == 2:
-        return "Pair"
-    
-    return "High Card"
+        # Bestimme die Pokerhand basierend auf den Kartenmustern
+        if is_royal_flush:
+            return "Royal Flush"
+        if is_flush and is_straight:
+            return "Straight Flush"
+        if most_common_values[0][1] == 4:
+            return "Four of a Kind"
+        if most_common_values[0][1] == 3 and most_common_values[1][1] == 2:
+            return "Full House"
+        if is_flush:
+            return "Flush"
+        if is_straight:
+            return "Straight"
+        if most_common_values[0][1] == 3:
+            return "Three of a Kind"
+        if most_common_values[0][1] == 2 and most_common_values[1][1] == 2:
+            return "Two Pair"
+        if most_common_values[0][1] == 2:
+            return "Pair"
+
+        return "High Card"
+    except Exception as e:
+        print(f"Error in checking hand: {e}")
+        return "Error"
 
 # Simulationsfunktion, um Pokerhände n-mal zu simulieren und ihre Häufigkeit zu zählen
 def simulate_poker_hands(n, hand_size):
-    # Zähle die Anzahl jeder Pokerhand, die während der Simulation vorkommt
     hand_statistics = Counter()
 
     # Führe die Simulation n-mal aus
     for _ in range(n):
-        # Erstelle und mische ein neues Deck für jede Simulation
-        deck = shuffle_deck(create_deck())
-        # Ziehe eine Hand mit der angegebenen Größe (z.B. 5 Karten)
-        hand = deal_cards(deck, hand_size)
-        # Überprüfe die Hand, um die Pokerhand zu ermitteln
-        hand_type = check_hand(hand)
-        # Zähle die erkannte Pokerhand
-        hand_statistics[hand_type] += 1
+        try:
+            # Erstelle und mische ein neues Deck für jede Simulation
+            deck = shuffle_deck(create_deck())
+            # Ziehe eine Hand mit der angegebenen Größe (z.B. 5 Karten)
+            hand = deal_cards(deck, hand_size)
+            if not hand:
+                continue  # Wenn keine Hand gezogen werden konnte, überspringe die Iteration
+            # Überprüfe die Hand, um die Pokerhand zu ermitteln
+            hand_type = check_hand(hand)
+            hand_statistics[hand_type] += 1
+        except Exception as e:
+            print(f"Error during simulation: {e}")
+            continue  # Fahre mit der nächsten Simulation fort, falls ein Fehler auftritt
     
     # Berechne den prozentualen Anteil jeder Hand am Gesamtergebnis
     for hand_type in hand_statistics:
@@ -111,11 +135,8 @@ def simulate_poker_hands(n, hand_size):
     return hand_statistics
 
 def main():
-    # Anzahl der Simulationsdurchläufe
-    n = 1_000_000
-    # Simuliere Pokerhände mit 5 Karten
-    hand_statistics = simulate_poker_hands(n, 5)
-    # Gib die Wahrscheinlichkeiten jeder Pokerhand aus
+    n, hand_size = user_input()
+    hand_statistics = simulate_poker_hands(n, hand_size)  # Simuliere Pokerhände mit 5 Karten
     for hand_type, percentage in hand_statistics.items():
         print(f'{hand_type}: {percentage:.5f}%')
 
