@@ -1,5 +1,4 @@
 import unittest
-from collections import Counter
 
 # Importiere die zu testenden Klassen und Funktionen
 from poker_main import Card, create_deck, shuffle_deck, deal_cards, check_hand, simulate_poker_hands
