@@ -32,33 +32,32 @@ class FormulaOneCar(Car):
     def race(self):
         return f"The {self.color} {self.brand} F1 car from {self.team} is racing at {self.top_speed} km/h!"
     
-class Helicopter(Vehicle):
-    def __init__(self, brand, model, color, max_altitude):
-        super().__init__(brand, model)
-        self.color = color
-        self.max_altitude = max_altitude
+class ElectricCar(Car):
+    def __init__(self, brand, model, color, battery_capacity):
+        super().__init__(brand, model, color)
+        self.battery_capacity = battery_capacity
 
     def __str__(self):
-        return f"{self.color} {self.brand} {self.model} with a max altitude of {self.max_altitude} meters"
+        return f"{self.color} {self.brand} {self.model} with a battery capacity of {self.battery_capacity} kWh"
 
-    def fly(self):
-        return f"The {self.color} {self.brand} {self.model} is flying at a maximum altitude of {self.max_altitude} meters!"
-    
+    def charge(self):
+        return f"The {self.color} {self.brand} {self.model} is charging the battery!"
+
 def main():
     car = Car("Audi", "A4", "Black")
     print(car.__class__.__name__ + ": " + str(car))
     print(car.drive())
-    print(car.honk())
+    print(car.honk()+"\n")
     
     f1_car = FormulaOneCar("Ferrari", "SF1000", "Red", 375, "Scuderia Ferrari")
     print(f1_car.__class__.__name__ + ": " + str(f1_car))
     print(f1_car.race())
-    print(f1_car.honk())
+    print(f1_car.honk()+"\n")
     
-    helicopter = Helicopter("Airbus", "H145", "White", 5000)
-    print(helicopter.__class__.__name__ + ": " + str(helicopter))
-    print(helicopter.fly())
-    print(helicopter.honk())
+    e_car = ElectricCar("Tesla", "Model S", "White", 100)
+    print(e_car.__class__.__name__ + ": " + str(e_car))
+    print(e_car.charge())
+    print(e_car.honk()+"\n")
 
 if __name__ == "__main__":
     main()
