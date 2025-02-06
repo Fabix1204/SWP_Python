@@ -70,11 +70,11 @@ def main():
     h.buchen(d1)
     h.stornieren(d1)
     
-    print(h.anzahl_freie_zimmer())
+    print("Freie Zimmer: ", h.anzahl_freie_zimmer())
     
     h.buchen(h.naechstes_freies_zimmer())
     
-    print(h.anzahl_freie_zimmer())
+    print("Freie Zimmer: ", h.anzahl_freie_zimmer())
     
 if __name__ == "__main__":
     main()
