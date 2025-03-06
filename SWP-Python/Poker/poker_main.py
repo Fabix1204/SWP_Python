@@ -1,5 +1,27 @@
 import random
 from collections import Counter
+import functools
+import time
+
+def timer(func):
+    @functools.wraps(func)
+    def wrapper_timer(*args, **kwargs):
+        start_time = time.perf_counter()
+        result = func(*args, **kwargs)
+        end_time = time.perf_counter()
+        execution_time = end_time - start_time
+        print(f"Die Funktion '{func.__name__}' dauerte {execution_time:.6f} Sekunden.")
+        return result
+    return wrapper_timer
+
+def debug(func):
+    @functools.wraps(func)
+    def wrapper_debug(*args, **kwargs):
+        print(f"Aufruf: {func.__name__} mit args={args}, kwargs={kwargs}")
+        result = func(*args, **kwargs)
+        print(f"{func.__name__} gab {result} zurück")
+        return result
+    return wrapper_debug
 
 # Klasse, die eine einzelne Karte mit einem Wert und einer Farbe darstellt
 class Card():
@@ -134,6 +156,8 @@ def simulate_poker_hands(n, hand_size):
 
     return hand_statistics
 
+@timer
+@debug
 def main():
     n, hand_size = user_input()
     hand_statistics = simulate_poker_hands(n, hand_size)  # Simuliere Pokerhände mit 5 Karten
